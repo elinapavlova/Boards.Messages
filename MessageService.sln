@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{72173740-5113-4020-AB5C-9EA28FAC53A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boards.MessageService.Api", "Boards.MessageService.Api\Boards.MessageService.Api.csproj", "{72173740-5113-4020-AB5C-9EA28FAC53A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\AuthService\Common\Common.csproj", "{AE464F85-317A-47B0-B3D8-E6DB2947CD3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{ED7C690A-B906-4CD8-98B2-A566142AE319}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boards.MessageService.Core", "Boards.MessageService.Core\Boards.MessageService.Core.csproj", "{ED7C690A-B906-4CD8-98B2-A566142AE319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{ED1BF5BC-AA01-4CF3-8D24-10FD16B26818}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Boards.MessageService.Database", "Boards.MessageService.Database\Boards.MessageService.Database.csproj", "{ED1BF5BC-AA01-4CF3-8D24-10FD16B26818}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

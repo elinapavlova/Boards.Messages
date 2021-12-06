@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
-using Common.Options;
+using Boards.Common.Options;
 using Boards.MessageService.Core.Profiles;
 using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Core.Services.Message;

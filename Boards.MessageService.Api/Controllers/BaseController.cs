@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Common.Error;
-using Common.Result;
+using Boards.Common.Error;
+using Boards.Common.Result;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Boards.MessageService.Api.Controllers

@@ -11,9 +11,9 @@ using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Database.Models;
 using Boards.MessageService.Database.Repositories.Message;
 using Boards.MessageService.Database.Repositories.Thread;
-using Common.Error;
-using Common.Filter;
-using Common.Result;
+using Boards.Common.Error;
+using Boards.Common.Filter;
+using Boards.Common.Result;
 
 namespace Boards.MessageService.Core.Services.Message
 {

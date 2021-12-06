@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common.Result;
+using Boards.Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
 using Boards.MessageService.Core.Services.Message;
-using Common.Filter;
+using Boards.Common.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

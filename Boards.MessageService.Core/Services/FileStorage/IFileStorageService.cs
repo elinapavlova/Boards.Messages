@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Boards.MessageService.Core.Dto.File.Upload;
-using Common.Result;
+using Boards.Common.Result;
 using Boards.MessageService.Database.Models;
 using Microsoft.AspNetCore.Http;
 

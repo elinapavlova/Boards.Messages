@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common.Base;
+using Boards.Common.Base;
 
 namespace Boards.MessageService.Database.Models
 {

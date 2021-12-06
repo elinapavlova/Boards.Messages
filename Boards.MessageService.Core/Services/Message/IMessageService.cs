@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Boards.Common.Filter;
+using Boards.Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
-using Common.Filter;
-using Common.Result;
 
 namespace Boards.MessageService.Core.Services.Message
 {

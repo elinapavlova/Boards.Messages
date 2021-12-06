@@ -1,5 +1,5 @@
 ﻿using System;
-using Common.Base;
+using Boards.Common.Base;
 
 namespace Boards.MessageService.Core.Dto.File
 {

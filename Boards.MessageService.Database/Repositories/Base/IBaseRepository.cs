@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Common.Base;
+using Boards.Common.Base;
 
 namespace Boards.MessageService.Database.Repositories.Base
 {

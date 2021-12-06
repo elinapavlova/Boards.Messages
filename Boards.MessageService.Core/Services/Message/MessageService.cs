@@ -12,6 +12,7 @@ using Boards.MessageService.Database.Models;
 using Boards.MessageService.Database.Repositories.Message;
 using Boards.MessageService.Database.Repositories.Thread;
 using Common.Error;
+using Common.Filter;
 using Common.Result;
 
 namespace Boards.MessageService.Core.Services.Message
@@ -115,16 +116,16 @@ namespace Boards.MessageService.Core.Services.Message
             return result;
         }
 
-        public async Task<ResultContainer<ICollection<MessageModelDto>>> GetByThreadId(Guid id)
+        public async Task<ResultContainer<ICollection<MessageModelDto>>> GetByThreadId(Guid id, FilterPagingDto filter)
         {
-            var messages = _messageRepository.Get<MessageModel>(m => m.ThreadId == id);
-            var result = _mapper.Map<ResultContainer<ICollection<MessageModelDto>>>(messages);
-            foreach (var message in result.Data)
+            var result = new ResultContainer<ICollection<MessageModelDto>>();
+            var messages = await _messageRepository.GetByThreadId(id, filter.PageNumber, filter.PageSize);
+            if (messages == null)
             {
-                message.Files = _mapper.Map<ICollection<FileResponseDto>>(await _fileStorageService.GetByMessageId(message.Id));
-                message.ReferenceToMessage = message.ReferenceToMessage.Id == Guid.Empty ? null : 
-                    _mapper.Map<ReferenceToMessageDto>(await _messageRepository.GetById<MessageModel>(message.ReferenceToMessage.Id));
-            }
+                result.ErrorType = ErrorType.NotFound;
+                return result;
+            } 
+            result = _mapper.Map<ResultContainer<ICollection<MessageModelDto>>>(messages);
             return result;
         }
 
@@ -137,7 +138,6 @@ namespace Boards.MessageService.Core.Services.Message
             
             result.ErrorType = ErrorType.NotFound;
             return result;
-
         }
     }
 }

@@ -5,6 +5,7 @@ using Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
 using Boards.MessageService.Core.Services.Message;
+using Common.Filter;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,13 +56,14 @@ namespace Boards.MessageService.Api.Controllers
         /// Get messages by thread Id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="filter"></param>
         /// <response code="200">Return list of messages</response>
         [HttpPost("By-Thread-Id/{id:guid}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ICollection<MessageModelDto>>> GetByThreadId(Guid id)
+        public async Task<ActionResult<ICollection<MessageModelDto>>> GetByThreadId(Guid id, FilterPagingDto filter)
             => await ReturnResult<ResultContainer<ICollection<MessageModelDto>>, ICollection<MessageModelDto>>
-                (_messageService.GetByThreadId(id));
+                (_messageService.GetByThreadId(id, filter));
         
         /// <summary>
         /// Delete message

@@ -7,6 +7,7 @@ using Boards.Common.Options;
 using Boards.MessageService.Core.Profiles;
 using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Core.Services.Message;
+using Boards.MessageService.Core.Services.Thread;
 using Boards.MessageService.Database;
 using Boards.MessageService.Database.Repositories.File;
 using Boards.MessageService.Database.Repositories.Message;
@@ -45,6 +46,10 @@ namespace Boards.MessageService.Api
             {
                 client.BaseAddress = new Uri(Configuration["BaseAddress:FileStorage"]);
             });
+            services.AddHttpClient<IThreadService,ThreadService>("BoardService", client =>
+            {
+                client.BaseAddress = new Uri(Configuration["BaseAddress:BoardService"]);
+            });
             
             ConfigureSwagger(services);
             
@@ -57,6 +62,7 @@ namespace Boards.MessageService.Api
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IMessageService, Core.Services.Message.MessageService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IThreadService, ThreadService>();
 
             var connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connection,  
@@ -121,7 +127,7 @@ namespace Boards.MessageService.Api
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-                options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
             });
             
             services.AddVersionedApiExplorer(options =>

@@ -17,6 +17,7 @@ namespace Boards.MessageService.Core.Profiles
                     opt.Ignore());
 
             CreateMap<FileModel, FileResponseDto>();
+            CreateMap<FileModel, FileResultDto>();
             
             CreateMap<FileResponseDto, FileModel>();
 

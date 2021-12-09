@@ -14,7 +14,7 @@ namespace Boards.MessageService.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("/api/v{version:apiVersion}/[controller]")]
     public class MessagesController : BaseController
     {
         private readonly IMessageService _messageService;

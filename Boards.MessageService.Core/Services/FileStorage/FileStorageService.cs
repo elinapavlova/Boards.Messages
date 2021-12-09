@@ -5,9 +5,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
 using Boards.MessageService.Core.Dto.File;
-using Boards.MessageService.Core.Dto.File.Upload;
-using Boards.Common.Error;
-using Boards.Common.Result;
 using Boards.MessageService.Database.Models;
 using Boards.MessageService.Database.Repositories.File;
 using Microsoft.AspNetCore.Http;
@@ -33,28 +30,33 @@ namespace Boards.MessageService.Core.Services.FileStorage
             _mapper = mapper;
         }
 
-        public async Task<ICollection<FileModel>> GetByMessageId(Guid id)
+        public async Task<ICollection<FileResultDto>> GetByMessageId(Guid id)
         {
-            var files = _fileRepository.Get<FileModel>(f => f.MessageId != null && f.MessageId == id);
-            return files;
+            using var client = _clientFactory.CreateClient("FileStorage");
+            var response = await client.PostAsync($"By-Message-Id/{id}", null!);
+            var responseMessage = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ICollection<FileResultDto>>(responseMessage);
+            return result;
         }
         
-        public async Task<ResultContainer<UploadFilesResponseDto>> Upload(IFormFileCollection files, Guid messageId, Guid threadId)
+        public async Task<List<FileResponseDto>> Upload(IFormFileCollection files, Guid messageId,
+            Guid threadId)
         {
-            var result = new ResultContainer<UploadFilesResponseDto>();
+
             var content = await CreateContent(files);
             if (content == null)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
-            }
+                return null;
 
             using var client = _clientFactory.CreateClient("FileStorage");
             var response = await client.PostAsync("Upload", content);
             var responseMessage = await response.Content.ReadAsStringAsync();
-            var responseJson = JsonConvert.DeserializeObject<UploadFilesResultDto>(responseMessage);
+            var result = JsonConvert.DeserializeObject<List<FileResponseDto>>(responseMessage);
 
-            result = await ValidateResult(responseJson, messageId, threadId);
+            if (result == null)
+                return null;
+
+            await AddFilesToDatabase(threadId, messageId, result);
+
             return result;
         }
         
@@ -73,56 +75,23 @@ namespace Boards.MessageService.Core.Services.FileStorage
 
                 var streamContent = new StreamContent(file.OpenReadStream());
                 streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
-                streamContent.Headers.Add("api-version", "1.0");
                 multiContent.Add(streamContent, file.Name, file.FileName);
             }
 
             return multiContent;
         }
         
-        private async Task<ResultContainer<UploadFilesResponseDto>> ValidateResult
-            (UploadFilesResultDto files, Guid messageId, Guid threadId)
+        private async Task AddFilesToDatabase(Guid threadId, Guid messageId, IEnumerable<FileResponseDto> files)
         {
-            var result = new ResultContainer<UploadFilesResponseDto>
+            foreach (var file in files)
             {
-                Data = new UploadFilesResponseDto
-                {
-                    Files = new List<FileResponseDto>()
-                }
-            };
-
-            if (files.ErrorType != null)
-            {
-                result.ErrorType = ErrorType.BadRequest;
-                return result;
+                var newFile = _mapper.Map<FileModel>(file);
+                newFile.DateCreated = DateTime.Now;
+                newFile.ThreadId = threadId;
+                newFile.MessageId = messageId;
+                
+                await _fileRepository.Create(newFile);
             }
-
-            foreach (var file in files.Data)
-            {
-                file.ThreadId = threadId;
-                file.MessageId = messageId;
-                switch (file.Extension)
-                {
-                    case ".mp4" :
-                    case ".wav" :
-                    case ".txt" :
-                    case ".png" :
-                    case ".jpg" :
-                        var res = await AddFileToDatabase(file);
-                        result.Data.Files.Add(res);
-                        break;
-                }
-            }
-
-            return result;
-        }
-
-        private async Task<FileResponseDto> AddFileToDatabase(FileResponseDto newFile)
-        {
-            var file = _mapper.Map<FileModel>(newFile);
-            var result = _mapper.Map<FileResponseDto>(await _fileRepository.Create(file));
-
-            return result;
         }
     }
 }

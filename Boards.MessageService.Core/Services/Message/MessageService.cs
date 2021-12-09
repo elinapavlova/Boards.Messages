@@ -3,37 +3,36 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
-using Boards.MessageService.Core.Dto.File;
-using Boards.MessageService.Core.Dto.File.Upload;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
 using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Database.Models;
 using Boards.MessageService.Database.Repositories.Message;
-using Boards.MessageService.Database.Repositories.Thread;
 using Boards.Common.Error;
 using Boards.Common.Filter;
 using Boards.Common.Result;
+using Boards.MessageService.Core.Dto.File;
+using Boards.MessageService.Core.Services.Thread;
 
 namespace Boards.MessageService.Core.Services.Message
 {
     public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly IThreadRepository _threadRepository;
+        private readonly IThreadService _threadService;
         private readonly IFileStorageService _fileStorageService;
         private readonly IMapper _mapper;
 
         public MessageService
         (
             IMessageRepository messageRepository, 
-            IThreadRepository threadRepository,
+            IThreadService threadService,
             IFileStorageService fileStorageService,
             IMapper mapper
         )
         {
             _messageRepository = messageRepository;
-            _threadRepository = threadRepository;
+            _threadService = threadService;
             _fileStorageService = fileStorageService;
             _mapper = mapper;
         }
@@ -41,7 +40,7 @@ namespace Boards.MessageService.Core.Services.Message
         public async Task<ResultContainer<CreateMessageResponseDto>> Create(CreateMessageRequestDto data)
         {
             var result = new ResultContainer<CreateMessageResponseDto>();
-            var resultUpload = new ResultContainer<UploadFilesResponseDto>();
+            var resultUpload = new List<FileResponseDto>();
             
             if (string.IsNullOrEmpty(data.Text))
             {
@@ -49,7 +48,7 @@ namespace Boards.MessageService.Core.Services.Message
                 return result;
             }
 
-            var thread = await _threadRepository.GetById<ThreadModel>(data.ThreadId);
+            var thread = await _threadService.GetById(data.ThreadId);
             if (thread == null)
             {
                 result.ErrorType = ErrorType.NotFound;
@@ -74,10 +73,11 @@ namespace Boards.MessageService.Core.Services.Message
             if (data.Files != null)
                 resultUpload = await _fileStorageService.Upload(data.Files, result.Data.Id, result.Data.ThreadId);
 
-            if (resultUpload.Data != null)
-                result.Data.Files = resultUpload.Data.Files;
+            if (resultUpload != null)
+                foreach (var file in resultUpload)
+                    result.Data.Files.Add(file.Url);
 
-            if (resultUpload.ErrorType.HasValue)
+            if (resultUpload == null)
                 result.ErrorType = ErrorType.BadRequest;
             else 
                 scope.Complete();
@@ -112,7 +112,7 @@ namespace Boards.MessageService.Core.Services.Message
 
             result = _mapper.Map<ResultContainer<MessageModelDto>>(message);
             result.Data.ReferenceToMessage = _mapper.Map<ReferenceToMessageDto>(referenceToMessage);
-            result.Data.Files = _mapper.Map<ICollection<FileResponseDto>>(await _fileStorageService.GetByMessageId(id));
+            result.Data.Files = await _fileStorageService.GetByMessageId(id);
             return result;
         }
 
@@ -126,6 +126,9 @@ namespace Boards.MessageService.Core.Services.Message
                 return result;
             } 
             result = _mapper.Map<ResultContainer<ICollection<MessageModelDto>>>(messages);
+            
+            foreach(var file in result.Data)
+                file.Files = await _fileStorageService.GetByMessageId(file.Id);
             return result;
         }
 

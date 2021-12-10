@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
+using Boards.Auth.Common.Error;
+using Boards.Auth.Common.Filter;
+using Boards.Auth.Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
 using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Database.Models;
 using Boards.MessageService.Database.Repositories.Message;
-using Boards.Common.Error;
-using Boards.Common.Filter;
-using Boards.Common.Result;
 using Boards.MessageService.Core.Dto.File;
 using Boards.MessageService.Core.Services.Thread;
 

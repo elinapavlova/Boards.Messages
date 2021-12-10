@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\AuthService\Boards.Common\Boards.Common.csproj" />
+      <ProjectReference Include="..\..\AuthService\Boards.Auth.Common\Boards.Auth.Common.csproj" />
       <ProjectReference Include="..\Boards.MessageService.Core\Boards.MessageService.Core.csproj" />
       <ProjectReference Include="..\Boards.MessageService.Database\Boards.MessageService.Database.csproj" />
     </ItemGroup>

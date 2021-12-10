@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Boards.Common.Base;
+using Boards.Auth.Common.Base;
 
 namespace Boards.MessageService.Core.Dto.Message.Create
 {

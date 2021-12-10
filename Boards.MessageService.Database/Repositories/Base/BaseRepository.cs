@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Boards.Common.Base;
+using Boards.Auth.Common.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace Boards.MessageService.Database.Repositories.Base

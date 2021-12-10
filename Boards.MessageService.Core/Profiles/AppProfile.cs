@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using Boards.Auth.Common.Result;
 using Boards.MessageService.Core.Dto.File;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
-using Boards.Common.Result;
 using Boards.MessageService.Database.Models;
 
 namespace Boards.MessageService.Core.Profiles

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Boards.Auth.Common.Base;
-using Microsoft.EntityFrameworkCore;
 
 namespace Boards.MessageService.Database.Repositories.Base
 {
@@ -22,11 +19,6 @@ namespace Boards.MessageService.Database.Repositories.Base
             await _context.Set<TModel>().AddAsync(item);
             await _context.SaveChangesAsync();
             return item;
-        }
-        
-        public List<TEntity> Get<TEntity>(Func<TEntity, bool> predicate) where TEntity : BaseModel
-        {
-            return _context.Set<TEntity>().AsNoTracking().AsEnumerable().Where(predicate).ToList();
         }
 
         public async Task<TEntity> GetById<TEntity>(Guid id) where TEntity : BaseModel

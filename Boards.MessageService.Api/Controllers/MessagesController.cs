@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Boards.Auth.Common.Filter;
 using Boards.Auth.Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
@@ -28,7 +26,7 @@ namespace Boards.MessageService.Api.Controllers
         /// Create a message
         /// </summary>
         /// <response code="200">Return created message</response>
-        /// <response code="400">If the message text is empty</response>
+        /// <response code="400">If the message text is empty or files not loaded correctly</response>
         /// <response code="404">If thread doesn't exist</response>
         [HttpPost("[action]")]
         [AllowAnonymous]
@@ -51,20 +49,7 @@ namespace Boards.MessageService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MessageModelDto>> GetById(Guid id)
             => await ReturnResult<ResultContainer<MessageModelDto>, MessageModelDto>(_messageService.GetById(id));
-        
-        /// <summary>
-        /// Get messages by thread Id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="filter"></param>
-        /// <response code="200">Return list of messages</response>
-        [HttpPost("By-Thread-Id/{id:guid}")]
-        [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ICollection<MessageModelDto>>> GetByThreadId(Guid id, FilterPagingDto filter)
-            => await ReturnResult<ResultContainer<ICollection<MessageModelDto>>, ICollection<MessageModelDto>>
-                (_messageService.GetByThreadId(id, filter));
-        
+
         /// <summary>
         /// Delete message
         /// </summary>
@@ -76,6 +61,7 @@ namespace Boards.MessageService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MessageModelResponseDto>> Delete(Guid id)
-            => await ReturnResult<ResultContainer<MessageModelResponseDto>, MessageModelResponseDto>(_messageService.Delete(id));
+            => await ReturnResult<ResultContainer<MessageModelResponseDto>, MessageModelResponseDto>
+                (_messageService.Delete(id));
     }
 }

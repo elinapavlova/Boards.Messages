@@ -1,26 +1,30 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Boards.MessageService.Core.Dto.Thread;
-using Newtonsoft.Json;
+using Boards.MessageService.Database.Repositories.Thread;
 
 namespace Boards.MessageService.Core.Services.Thread
 {
     public class ThreadService : IThreadService
     {
-        private readonly IHttpClientFactory _clientFactory;
+        private readonly IThreadRepository _threadRepository;
+        private readonly IMapper _mapper;
         
-        public ThreadService(IHttpClientFactory clientFactory)
+        public ThreadService
+        (
+            IThreadRepository threadRepository, 
+            IMapper mapper
+        )
         {
-            _clientFactory = clientFactory;
+            _threadRepository = threadRepository;
+            _mapper = mapper;
         }
 
         public async Task<ThreadResponseDto> GetById(Guid id)
         {
-            using var client = _clientFactory.CreateClient("BoardService");
-            var response = await client.GetAsync($"{id}");
-            var responseMessage = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<ThreadResponseDto>(responseMessage);
+            var thread = await _threadRepository.GetById(id);
+            var result = _mapper.Map<ThreadResponseDto>(thread);
             return result;
         }
     }

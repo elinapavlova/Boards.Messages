@@ -4,6 +4,7 @@ using Boards.Auth.Common.Result;
 using Boards.MessageService.Core.Dto.File;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
+using Boards.MessageService.Core.Dto.Thread;
 using Boards.MessageService.Database.Models;
 
 namespace Boards.MessageService.Core.Profiles
@@ -21,6 +22,8 @@ namespace Boards.MessageService.Core.Profiles
             
             CreateMap<FileResponseDto, FileModel>();
 
+            CreateMap<ThreadModel, ThreadResponseDto>();
+            
             CreateMap<MessageModel, ReferenceToMessageDto>();
             CreateMap<MessageModel, MessageModelResponseDto>();
             CreateMap<MessageModel, CreateMessageResponseDto>();

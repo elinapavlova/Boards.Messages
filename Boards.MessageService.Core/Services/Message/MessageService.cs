@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
 using Boards.Auth.Common.Error;
-using Boards.Auth.Common.Filter;
 using Boards.Auth.Common.Result;
 using Boards.MessageService.Core.Dto.Message;
 using Boards.MessageService.Core.Dto.Message.Create;
@@ -113,22 +112,6 @@ namespace Boards.MessageService.Core.Services.Message
             result = _mapper.Map<ResultContainer<MessageModelDto>>(message);
             result.Data.ReferenceToMessage = _mapper.Map<ReferenceToMessageDto>(referenceToMessage);
             result.Data.Files = await _fileStorageService.GetByMessageId(id);
-            return result;
-        }
-
-        public async Task<ResultContainer<ICollection<MessageModelDto>>> GetByThreadId(Guid id, FilterPagingDto filter)
-        {
-            var result = new ResultContainer<ICollection<MessageModelDto>>();
-            var messages = await _messageRepository.GetByThreadId(id, filter.PageNumber, filter.PageSize);
-            if (messages == null)
-            {
-                result.ErrorType = ErrorType.NotFound;
-                return result;
-            } 
-            result = _mapper.Map<ResultContainer<ICollection<MessageModelDto>>>(messages);
-            
-            foreach(var file in result.Data)
-                file.Files = await _fileStorageService.GetByMessageId(file.Id);
             return result;
         }
 

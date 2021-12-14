@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using AutoMapper;
 using Boards.Auth.Common.Options;
+using Boards.MessageService.Core.Options;
 using Boards.MessageService.Core.Profiles;
 using Boards.MessageService.Core.Services.FileStorage;
 using Boards.MessageService.Core.Services.Message;
@@ -56,6 +57,10 @@ namespace Boards.MessageService.Api
             services.Configure<AppOptions>(Configuration.GetSection(AppOptions.App));
             var tokenOptions = Configuration.GetSection(AppOptions.App).Get<AppOptions>();
             services.AddSingleton(tokenOptions);
+            
+            services.Configure<BaseAddresses>(Configuration.GetSection(BaseAddresses.BaseAddress));
+            var addressesOptions = Configuration.GetSection(BaseAddresses.BaseAddress).Get<BaseAddresses>();
+            services.AddSingleton(addressesOptions);
 
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IThreadRepository, ThreadRepository>();
